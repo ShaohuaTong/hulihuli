@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.hua</groupId>
+    <artifactId>hulihuli</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.2</version>
+    </parent>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hulihuli-api.version>1.0-SNAPSHOT</hulihuli-api.version>
+        <hulihuli-dao.version>1.0-SNAPSHOT</hulihuli-dao.version>
+        <hulihuli-service.version>1.0-SNAPSHOT</hulihuli-service.version>
+        <mybatis-spring-boot-starter.version>2.2.0</mybatis-spring-boot-starter.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.hua</groupId>
+                <artifactId>hulihuli-api</artifactId>
+                <version>${hulihuli-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hua</groupId>
+                <artifactId>hulihuli-dao</artifactId>
+                <version>${hulihuli-dao.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hua</groupId>
+                <artifactId>hulihuli-service</artifactId>
+                <version>${hulihuli-service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring-boot-starter.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>hulihuli-api</module>
+        <module>hulihuli-dao</module>
+        <module>hulihuli-service</module>
+    </modules>
+</project>
