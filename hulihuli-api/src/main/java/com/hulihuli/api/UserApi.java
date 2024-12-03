@@ -6,10 +6,7 @@ import com.hulihuli.domain.User;
 import com.hulihuli.service.UserService;
 import com.hulihuli.service.util.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserApi {
@@ -43,6 +40,14 @@ public class UserApi {
     public JsonResponse<String> login(@RequestBody User user) throws Exception {
         String token = userService.login(user);
         return new JsonResponse<>(token);
+    }
+
+    @PutMapping("/users")
+    public JsonResponse<String> updateUser(@RequestBody User user) throws Exception {
+        Long userId = userSupport.getCurrentUserId();
+        user.setId(userId);
+        userService.updateUsers(user);
+        return JsonResponse.success();
     }
 
 }
