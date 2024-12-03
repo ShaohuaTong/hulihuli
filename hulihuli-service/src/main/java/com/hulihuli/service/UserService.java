@@ -7,6 +7,7 @@ import com.hulihuli.domain.constant.UserConstant;
 import com.hulihuli.exception.ConditionException;
 import com.hulihuli.service.util.MD5Util;
 import com.hulihuli.service.util.RSAUtil;
+import com.hulihuli.service.util.TokenUtil;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,8 +40,7 @@ public class UserService {
             throw new ConditionException("密码解密失败！");
         }
 
-        String md5Password = MD5Util.sign(rawPassword, salt, "UFT-8");
-
+        String md5Password = MD5Util.sign(rawPassword, salt, "UTF-8");
         user.setPassword(md5Password);
         user.setSalt(salt);
         user.setCreateTime(now);
@@ -56,8 +56,37 @@ public class UserService {
         userDao.addUserInfo(userInfo);
     }
 
+    public String login(User user) throws Exception {
+        String phone = user.getPhone();
+        if (StringUtils.isNullOrEmpty(phone)) {
+            throw new ConditionException("手机号不能为空！");
+        }
+        User dbUser = this.getUserByPhone(phone);
+        if (dbUser == null) {
+            throw new ConditionException("当前用户不存在！");
+        }
+        String rawPassword;
+        try {
+            rawPassword = RSAUtil.decrypt(user.getPassword());
+        } catch (Exception e) {
+            throw new ConditionException("密码解密失败！");
+        }
+        String md5Password = MD5Util.sign(rawPassword, dbUser.getSalt(), "UTF-8");
+        if (!md5Password.equals(dbUser.getPassword())) {
+            throw new ConditionException("密码错误！");
+        }
+        return TokenUtil.generateToken(dbUser.getId());
+    }
+
     public User getUserByPhone(String phone) {
         return userDao.getUserByPhone(phone);
+    }
+
+    public User getUserInfo(Long userId) {
+        User user = userDao.getUserById(userId);
+        UserInfo userInfo = userDao.getUserInfoByUserId(userId);
+        user.setUserInfo(userInfo);
+        return user;
     }
 
 }

@@ -4,7 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hulihuli.dao.UserDao">
     <select id="getUserByPhone" parameterType="java.lang.String" resultType="com.hulihuli.domain.User">
-        select * from t_table where phone = #{phone}
+        select * from t_user where phone = #{phone}
+    </select>
+    <select id="getUserById" parameterType="java.lang.Long" resultType="com.hulihuli.domain.User">
+        select * from t_user where id = #{id}
+    </select>
+    <select id="getUserInfoByUserId" parameterType="java.lang.Long" resultType="com.hulihuli.domain.UserInfo">
+        select * from t_user_info where userId = #{userId}
     </select>
 
     <insert id="addUser" parameterType="com.hulihuli.domain.User" useGeneratedKeys="true" keyProperty="id">
