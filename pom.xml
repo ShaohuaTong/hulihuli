@@ -25,6 +25,13 @@
         <mybatis-spring-boot-starter.version>2.2.0</mybatis-spring-boot-starter.version>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
