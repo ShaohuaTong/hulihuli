@@ -22,4 +22,6 @@ public interface UserDao {
 
     User getUserByPhoneOrEmail(@Param("phone") String phone, @Param("email") String email);
 
+    Integer updateUserInfos(UserInfo userInfo);
+
 }

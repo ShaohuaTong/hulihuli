@@ -3,6 +3,7 @@ package com.hulihuli.api;
 import com.hulihuli.api.support.UserSupport;
 import com.hulihuli.domain.JsonResponse;
 import com.hulihuli.domain.User;
+import com.hulihuli.domain.UserInfo;
 import com.hulihuli.service.UserService;
 import com.hulihuli.service.util.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,14 @@ public class UserApi {
         Long userId = userSupport.getCurrentUserId();
         user.setId(userId);
         userService.updateUsers(user);
+        return JsonResponse.success();
+    }
+
+    @PutMapping("/user-infos")
+    public JsonResponse<String> updateUserInfos(@RequestBody UserInfo userInfo) throws Exception {
+        Long userId = userSupport.getCurrentUserId();
+        userInfo.setUserId(userId);
+        userService.updateUserInfos(userInfo);
         return JsonResponse.success();
     }
 
