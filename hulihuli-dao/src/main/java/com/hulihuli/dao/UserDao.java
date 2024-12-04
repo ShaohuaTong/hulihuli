@@ -5,6 +5,9 @@ import com.hulihuli.domain.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+import java.util.Set;
+
 @Mapper
 public interface UserDao {
 
@@ -24,4 +27,5 @@ public interface UserDao {
 
     Integer updateUserInfos(UserInfo userInfo);
 
+    List<UserInfo> getUserInfoByUserIds(Set<Long> userIdList);
 }
