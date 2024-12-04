@@ -63,11 +63,13 @@ public class UserFollowingService {
         // 找到被用户关注的用户的所有UserInfo
         if (!followingIdSet.isEmpty()) {
             userInfoList = userService.getUserInfoByUserIds(followingIdSet);
+        } else {
+            return new ArrayList<>();
         }
         // 绑定User和UserInfo
         for (UserFollowing userFollowing : userFollowinglist) {
             for (UserInfo userInfo : userInfoList) {
-                if (userInfo.getUserId().equals(userFollowing.getFollowingId())) {
+                if (userInfo.getUserId().equals(userFollowing.getUserId())) {
                     userFollowing.setUserInfo(userInfo);
                 }
             }
@@ -107,8 +109,10 @@ public class UserFollowingService {
 
         // 找到粉丝的所有userInfo
         List<UserInfo> userInfoList = new ArrayList<>();
-        if (fanIdSet.isEmpty()) {
+        if (!fanIdSet.isEmpty()) {
             userInfoList = userService.getUserInfoByUserIds(fanIdSet);
+        } else {
+            return new ArrayList<>();
         }
 
         // 找到被用户关注的所有用户
