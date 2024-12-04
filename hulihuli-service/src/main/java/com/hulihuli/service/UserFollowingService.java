@@ -67,7 +67,7 @@ public class UserFollowingService {
         // 绑定User和UserInfo
         for (UserFollowing userFollowing : userFollowinglist) {
             for (UserInfo userInfo : userInfoList) {
-                if (userInfo.getUserId().equals(userFollowing.getUserId())) {
+                if (userInfo.getUserId().equals(userFollowing.getFollowingId())) {
                     userFollowing.setUserInfo(userInfo);
                 }
             }
