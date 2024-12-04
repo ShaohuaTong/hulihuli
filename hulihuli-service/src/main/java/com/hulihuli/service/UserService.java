@@ -112,4 +112,8 @@ public class UserService {
         userDao.updateUserInfos(userInfo);
     }
 
+    public User getUserById(Long id) {
+        return userDao.getUserById(id);
+    }
+
 }

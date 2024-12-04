@@ -12,4 +12,6 @@ public class UserConstant {
 
     public static final String DEFAULT_NICK = "新人";
 
+    public static final String USER_FOLLOWING_GROUP_TYPE_DEFAULT = "2";
+
 }
