@@ -9,8 +9,7 @@ use hulihuli;
 -- ----------------------------
 -- t_user 的表结构
 -- ----------------------------
-DROP TABLE IF EXISTS `t_user`;
-CREATE TABLE `t_user` (
+CREATE TABLE IF NOT EXISTS t_user (
                           `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
                           `phone` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '手机号',
                           `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '邮箱',
@@ -24,8 +23,7 @@ CREATE TABLE `t_user` (
 -- ----------------------------
 -- t_user_info 的表结构
 -- ----------------------------
-DROP TABLE IF EXISTS `t_user_info`;
-CREATE TABLE `t_user_info` (
+CREATE TABLE IF NOT EXISTS t_user_info (
                                `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
                                `userId` bigint DEFAULT NULL COMMENT '用户id',
                                `nick` varchar(100) DEFAULT NULL COMMENT '昵称',
@@ -37,4 +35,30 @@ CREATE TABLE `t_user_info` (
                                `updateTime` datetime DEFAULT NULL COMMENT '更新时间',
                                PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户基本信息表';
+
+-- ----------------------------
+-- t_following_group 的表结构
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS t_following_group (
+                                     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                     `userId` bigint DEFAULT NULL COMMENT '用户id',
+                                     `name` varchar(50) DEFAULT NULL COMMENT '关注分组名称',
+                                     `type` varchar(5) DEFAULT NULL COMMENT '关注分组类型：0特别关注  1悄悄关注 2默认分组  3用户自定义分组',
+                                     `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+                                     `updateTime` datetime DEFAULT NULL COMMENT '更新时间',
+                                     PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户关注分组表';
+
+-- ----------------------------
+-- t_user_following 的表结构
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS t_user_following (
+                                    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                    `userId` bigint DEFAULT NULL COMMENT '用户id',
+                                    `followingId` int DEFAULT NULL COMMENT '关注用户id',
+                                    `groupId` int DEFAULT NULL COMMENT '关注分组id',
+                                    `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+                                    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户关注表';
+
 
