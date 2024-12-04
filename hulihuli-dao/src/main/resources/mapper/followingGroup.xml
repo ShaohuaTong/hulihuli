@@ -3,7 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hulihuli.dao.FollowingGroupDao">
-
     <select id="getByType" parameterType="java.lang.String" resultType="com.hulihuli.domain.FollowingGroup">
         select * from t_following_group where `type` = #{type}
     </select>
@@ -15,6 +14,23 @@
         select * from t_following_group
         where
             userId = #{userId} or `type` in ('0', '1', '2')
+    </select>
+    <insert  id="addFollowingGroup" parameterType="com.hulihuli.domain.FollowingGroup" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            t_following_group(
+                userId,
+                `name`,
+                `type`,
+                createTime
+            ) values (
+                #{userId},
+                #{name},
+                #{type},
+                #{createTime}
+            )
+    </insert>
+    <select id="getUserFollowingGroups" parameterType="java.lang.Long" resultType="com.hulihuli.domain.FollowingGroup">
+        select * from t_following_group where userId = #{userId}
     </select>
 </mapper>
 
