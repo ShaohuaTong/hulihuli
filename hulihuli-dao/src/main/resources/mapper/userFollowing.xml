@@ -12,5 +12,8 @@
     <select id="getUserFollowings" parameterType="java.lang.Long" resultType="com.hulihuli.domain.UserFollowing">
          select * from t_user_following where userId = #{userId}
     </select>
+    <select id="getUserFans" parameterType="java.lang.Long" resultType="com.hulihuli.domain.UserFollowing">
+        select * from t_user_following where followingId = #{followingId}
+    </select>
 </mapper>
 

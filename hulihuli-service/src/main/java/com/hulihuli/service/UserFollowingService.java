@@ -61,7 +61,7 @@ public class UserFollowingService {
 
         List<UserInfo> userInfoList = new ArrayList<>();
         // 找到被用户关注的用户的所有UserInfo
-        if (followingIdSet.size() > 0) {
+        if (!followingIdSet.isEmpty()) {
             userInfoList = userService.getUserInfoByUserIds(followingIdSet);
         }
         // 绑定User和UserInfo
@@ -95,6 +95,41 @@ public class UserFollowingService {
             result.add(followingGroup);
         }
         return result;
+    }
+
+    // 获取当前用户的粉丝列表
+    // 根据粉丝的用户id查询基本信息
+    // 查询当前用户是否已经关注该粉丝 (互粉特别）
+    public List<UserFollowing>  getUserFans(Long userId) {
+        // 找到所有的关注这个用户的粉丝的userId
+        List<UserFollowing> fanList = userFollowingDao.getUserFans(userId);
+        Set<Long> fanIdSet = fanList.stream().map(UserFollowing::getUserId).collect(Collectors.toSet());
+
+        // 找到粉丝的所有userInfo
+        List<UserInfo> userInfoList = new ArrayList<>();
+        if (fanIdSet.isEmpty()) {
+            userInfoList = userService.getUserInfoByUserIds(fanIdSet);
+        }
+
+        // 找到被用户关注的所有用户
+        List<UserFollowing> followingList = userFollowingDao.getUserFollowings(userId);
+
+        for (UserFollowing fan : fanList) {
+            for (UserInfo userInfo : userInfoList) {
+                // 把粉丝和自己的userInfo绑定起来
+                if (userInfo.getUserId().equals(fan.getUserId())) {
+                    userInfo.setFollowed(false);
+                    fan.setUserInfo(userInfo);
+                }
+            }
+            // 如果粉丝和用户互粉
+            for (UserFollowing userFollowing : followingList) {
+                if (userFollowing.getFollowingId().equals(fan.getUserId())) {
+                    fan.getUserInfo().setFollowed(true);
+                }
+            }
+        }
+        return fanList;
     }
 
 }
