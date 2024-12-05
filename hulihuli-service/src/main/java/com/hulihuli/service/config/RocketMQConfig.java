@@ -59,7 +59,7 @@ public class RocketMQConfig {
                 String bodyString = new String(msg.getBody());
                 UserMoment userMoment = JSONObject.toJavaObject(JSONObject.parseObject(bodyString), UserMoment.class);
 
-                // 获得Producer发送的动态后 用户要消化
+                // 获得Producer发送的消息后 把消息里的动态存入该用户粉丝的redis
                 Long userId = userMoment.getUserId();
                 List<UserFollowing> fanList = userFollowingService.getUserFans(userId);
                 for (UserFollowing fan : fanList) {
