@@ -26,7 +26,7 @@ import java.util.List;
 @Configuration
 public class RocketMQConfig {
 
-    @Value("#{rocketmq.name.server.address}")
+    @Value("${rocketmq.name.server.address}")
     private String nameServerAddress;
 
     @Autowired
