@@ -25,6 +25,7 @@
         <mybatis-spring-boot-starter.version>2.2.0</mybatis-spring-boot-starter.version>
         <fastjson.version>1.2.78</fastjson.version>
         <java-jwt.version>3.18.2</java-jwt.version>
+        <rocketmq-client.version>4.9.1</rocketmq-client.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,15 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${java-jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>${rocketmq-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
 
