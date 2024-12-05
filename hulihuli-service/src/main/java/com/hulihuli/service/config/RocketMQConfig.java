@@ -1,6 +1,11 @@
 package com.hulihuli.service.config;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hulihuli.domain.User;
+import com.hulihuli.domain.UserFollowing;
+import com.hulihuli.domain.UserMoment;
 import com.hulihuli.domain.constant.UserMomentsConstant;
+import com.hulihuli.service.UserFollowingService;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -15,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -25,6 +31,9 @@ public class RocketMQConfig {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private UserFollowingService userFollowingService;
 
     @Bean("momentsProducer")
     public DefaultMQProducer momentsProducer() throws MQClientException {
@@ -43,8 +52,27 @@ public class RocketMQConfig {
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                for (MessageExt msg : msgs) {
-                    System.out.println(msg);
+                MessageExt msg = msgs.get(0);
+                if (msg == null) {
+                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
+                String bodyString = new String(msg.getBody());
+                UserMoment userMoment = JSONObject.toJavaObject(JSONObject.parseObject(bodyString), UserMoment.class);
+
+                // 获得Producer发送的动态后 用户要消化
+                Long userId = userMoment.getUserId();
+                List<UserFollowing> fanList = userFollowingService.getUserFans(userId);
+                for (UserFollowing fan : fanList) {
+                    String key = "subscribed-" + fan.getUserId();
+                    String subsribedListStr = redisTemplate.opsForValue().get(key);
+                    List<UserMoment> subscribedList;
+                    if (subsribedListStr == null) {
+                        subscribedList = new ArrayList<>();
+                    } else {
+                        subscribedList = JSONObject.parseArray(subsribedListStr, UserMoment.class);
+                    }
+                    subscribedList.add(userMoment);
+                    redisTemplate.opsForValue().set(key, JSONObject.toJSONString(subscribedList));
                 }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
