@@ -1,7 +1,18 @@
-#datasource
 spring:
+  #datasource
   datasource:
     url: jdbc:mysql://localhost:3306/hulihuli
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  #redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+#rocketmq
+rocketmq:
+  name:
+    server:
+      address: 127.0.0.1:9876
+
