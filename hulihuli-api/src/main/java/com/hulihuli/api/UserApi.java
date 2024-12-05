@@ -1,13 +1,18 @@
 package com.hulihuli.api;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hulihuli.api.support.UserSupport;
 import com.hulihuli.domain.JsonResponse;
+import com.hulihuli.domain.PageResult;
 import com.hulihuli.domain.User;
 import com.hulihuli.domain.UserInfo;
+import com.hulihuli.service.UserFollowingService;
 import com.hulihuli.service.UserService;
 import com.hulihuli.service.util.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserApi {
@@ -17,6 +22,9 @@ public class UserApi {
 
     @Autowired
     private UserSupport userSupport;
+
+    @Autowired
+    private UserFollowingService userFollowingService;
 
     @GetMapping("/users")
     public JsonResponse<User> getUserInfo() {
@@ -57,6 +65,24 @@ public class UserApi {
         userInfo.setUserId(userId);
         userService.updateUserInfos(userInfo);
         return JsonResponse.success();
+    }
+
+    @GetMapping("/user-infos")
+    public JsonResponse<PageResult<UserInfo>> pageListUserInfos(@RequestParam Integer pageNo, @RequestParam Integer pageSize, String nick) {
+        Long userId = userSupport.getCurrentUserId();
+        JSONObject params = new JSONObject();
+        params.put("pageNo", pageNo);
+        params.put("pageSize", pageSize);
+        params.put("nick", nick);
+        params.put("userId", userId);
+        PageResult<UserInfo> result = userService.pageListUserInfos(params);
+
+        // 想展示的是 还没被当前用户关注的用户
+        if (result.getTotal() > 0) {
+            List<UserInfo> checkedUserInfoList = userFollowingService.checkFollowingStatus(result.getList(), userId);
+            result.setList(checkedUserInfoList);
+        }
+        return new JsonResponse<>(result);
     }
 
 }

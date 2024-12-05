@@ -120,7 +120,7 @@ public class UserFollowingService {
 
         for (UserFollowing fan : fanList) {
             for (UserInfo userInfo : userInfoList) {
-                // 把粉丝和自己的userInfo绑定起来
+                // 把粉丝和自己的userInfo绑定起来 统一设置成false
                 if (userInfo.getUserId().equals(fan.getUserId())) {
                     userInfo.setFollowed(false);
                     fan.setUserInfo(userInfo);
@@ -146,4 +146,18 @@ public class UserFollowingService {
     public List<FollowingGroup> getUserFollowingGroups(Long userId) {
         return followingGroupService.getUserFollowingGroups(userId);
     }
+
+    public List<UserInfo> checkFollowingStatus(List<UserInfo> userInfoList, Long userId) {
+        List<UserFollowing> userFollowingList = userFollowingDao.getUserFollowings(userId);
+        for (UserInfo userInfo : userInfoList) {
+            userInfo.setFollowed(false);
+            for (UserFollowing userFollowing : userFollowingList) {
+                if (userInfo.getUserId().equals(userFollowing.getFollowingId())) {
+                    userInfo.setFollowed(true);
+                }
+            }
+        }
+        return userInfoList;
+    }
+
 }
