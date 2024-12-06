@@ -144,6 +144,17 @@ CREATE TABLE IF NOT EXISTS `t_user_role` (
                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='用户角色关联表';
 
+-- ----------------------------
+-- Table structure for t_refresh_token
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_refresh_token` (
+                                   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                   `userId` bigint DEFAULT NULL COMMENT '用户id',
+                                   `refreshToken` varchar(500) DEFAULT NULL COMMENT '刷新令牌',
+                                   `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='刷新令牌记录表';
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 

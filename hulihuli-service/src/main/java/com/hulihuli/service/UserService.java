@@ -3,6 +3,7 @@ package com.hulihuli.service;
 import com.alibaba.fastjson.JSONObject;
 import com.hulihuli.dao.UserDao;
 import com.hulihuli.domain.PageResult;
+import com.hulihuli.domain.RefreshTokenDetail;
 import com.hulihuli.domain.User;
 import com.hulihuli.domain.UserInfo;
 import com.hulihuli.domain.constant.UserConstant;
@@ -14,10 +15,7 @@ import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -92,6 +90,40 @@ public class UserService {
         return TokenUtil.generateToken(dbUser.getId());
     }
 
+    public Map<String, Object> loginForDts(User user) throws Exception {
+        // 前端只传phone或者email
+        String phone = user.getPhone() == null ? "" : user.getPhone();
+        String email = user.getEmail() == null ? "" : user.getEmail();
+
+        if (StringUtils.isNullOrEmpty(phone) && StringUtils.isNullOrEmpty(email)) {
+            throw new ConditionException("参数异常！");
+        }
+        User dbUser = userDao.getUserByPhoneOrEmail(phone, email);
+        if (dbUser == null) {
+            throw new ConditionException("当前用户不存在！");
+        }
+        String rawPassword;
+        try {
+            rawPassword = RSAUtil.decrypt(user.getPassword());
+        } catch (Exception e) {
+            throw new ConditionException("密码解密失败！");
+        }
+        String md5Password = MD5Util.sign(rawPassword, dbUser.getSalt(), "UTF-8");
+        if (!md5Password.equals(dbUser.getPassword())) {
+            throw new ConditionException("密码错误！");
+        }
+        Long userId = dbUser.getId();
+        String accessToken = TokenUtil.generateToken(userId);
+        String refreshToken = TokenUtil.generateRefreshToken(userId);
+        // 保存refreshToken到数据库
+        userDao.deleteRefreshToken(refreshToken, userId);
+        userDao.addRefreshToken(refreshToken, userId, new Date());
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("refreshToken", refreshToken);
+        return result;
+    }
+
     public User getUserByPhone(String phone) {
         return userDao.getUserByPhone(phone);
     }
@@ -142,5 +174,18 @@ public class UserService {
             list = userDao.pageListUserInfos(params);
         }
         return new PageResult<>(total, list);
+    }
+
+    public void logout(String refreshToken, Long userId) {
+        userDao.deleteRefreshToken(refreshToken, userId);
+    }
+
+    public String refreshAccessToken(String refreshToken) throws Exception {
+        RefreshTokenDetail refreshTokenDetail = userDao.getRefreshTokenDetail(refreshToken);
+        if (refreshTokenDetail == null) {
+            throw new ConditionException("555", "refreshToken过期！");
+        }
+        Long userId = refreshTokenDetail.getUserId();
+        return TokenUtil.generateToken(userId);
     }
 }

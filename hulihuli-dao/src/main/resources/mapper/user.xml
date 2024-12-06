@@ -3,6 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hulihuli.dao.UserDao">
+    <delete id="deleteRefreshToken">
+        delete from t_refresh_token where refreshToken = #{refreshToken} and userId = #{userId}
+    </delete>
+    <insert id="addRefreshToken">
+        insert into t_refresh_token(refreshToken, userId, createTime)
+              values(#{refreshToken}, #{userId}, #{createTime})
+    </insert>
     <select id="getUserByPhone" parameterType="java.lang.String" resultType="com.hulihuli.domain.User">
         select * from t_user where phone = #{phone}
     </select>
@@ -30,6 +37,7 @@
             t_user_info(userId, nick, avatar, sign, gender, birth, createTime)
         values (#{userId}, #{nick}, #{avatar}, #{sign}, #{gender}, #{birth}, #{createTime})
     </insert>
+
     <update id="updateUsers" parameterType="com.hulihuli.domain.User">
         update
             t_user
@@ -104,6 +112,9 @@
             </if>
         order by id desc
         limit #{offset}, #{limit}
+    </select>
+    <select id="getRefreshTokenDetail" parameterType="java.lang.String" resultType="com.hulihuli.domain.RefreshTokenDetail">
+        select * from t_refresh_token where refreshToken = #{refreshToken}
     </select>
 </mapper>
 
