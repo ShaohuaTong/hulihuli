@@ -4,6 +4,7 @@ import com.hulihuli.api.support.UserSupport;
 import com.hulihuli.domain.JsonResponse;
 import com.hulihuli.domain.UserMoment;
 import com.hulihuli.domain.annotation.ApiLimitedRole;
+import com.hulihuli.domain.annotation.DataLimited;
 import com.hulihuli.domain.constant.AuthRoleConstant;
 import com.hulihuli.service.UserMomentsService;
 import org.apache.ibatis.annotations.Param;
@@ -27,6 +28,7 @@ public class UserMomentsApi {
     private UserSupport userSupport;
 
     @ApiLimitedRole(limitedRoleCodeList = {AuthRoleConstant.ROLE_CODE_LV0})
+    @DataLimited
     @PostMapping("/user-moments")
     public JsonResponse<String> addUserMoments(@RequestBody UserMoment userMoment) throws MQBrokerException, RemotingException, InterruptedException, MQClientException {
         Long userId = userSupport.getCurrentUserId();
