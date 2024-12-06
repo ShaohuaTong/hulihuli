@@ -9,4 +9,6 @@ import java.util.List;
 public interface UserRoleDao {
 
     List<UserRole> getUserRolesByUserId(Long userId);
+
+    Integer addUserRole(UserRole userRole);
 }
