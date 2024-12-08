@@ -15,4 +15,6 @@ rocketmq:
   name:
     server:
       address: 127.0.0.1:9876
-
+#fastdfs
+fdfs:
+  tracker-list: 192.168.56.20:22122
