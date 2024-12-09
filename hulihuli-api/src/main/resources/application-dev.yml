@@ -24,3 +24,5 @@ rocketmq:
 fdfs:
   tracker-list: 192.168.56.20:22122
   tmpfilepath: "/Users/shaoh/tmpfile/"
+  http:
+    storage-addr: http://192.168.56.20:8888/group1/

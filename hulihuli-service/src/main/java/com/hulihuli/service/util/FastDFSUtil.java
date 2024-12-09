@@ -1,5 +1,6 @@
 package com.hulihuli.service.util;
 
+import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.github.tobato.fastdfs.domain.fdfs.MetaData;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.AppendFileStorageClient;
@@ -12,14 +13,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class FastDFSUtil {
@@ -43,9 +43,12 @@ public class FastDFSUtil {
     private static final String UPLOADED_NO_KEY = "uploaded-No-key:";
 
     private static final String DEFAULT_GROUP = "group1";
-
     // 2MB 2兆
     private static final int SLICE_SIZE = 1024 * 1024 * 2;
+
+    @Value("${fdfs.http.storage-addr}")
+    private String httpFdfsStorageAddr;
+
 
     // 上传
     public String uploadCommonFile(MultipartFile file) throws IOException {
@@ -157,6 +160,40 @@ public class FastDFSUtil {
         return fileName.substring(fileName.lastIndexOf("."));
     }
 
-
-
+    public void viewVideoOnlineBySlices(HttpServletRequest httpServletRequest,
+                                        HttpServletResponse httpServletResponse,
+                                        String path) throws Exception {
+        FileInfo fileInfo = fastFileStorageClient.queryFileInfo(DEFAULT_GROUP, path);
+        long totalFileSize = fileInfo.getFileSize();
+        String url = httpFdfsStorageAddr + path;
+        Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+        Map<String, Object> headers = new HashMap<>();
+        while (headerNames.hasMoreElements()) {
+            String header = headerNames.nextElement();
+            headers.put(header, httpServletRequest.getHeader(header));
+        }
+        // range: byetes=0-123456789
+        String rangeStr = httpServletRequest.getHeader("Range");
+        String[] range;
+        if (StringUtil.isNullOrEmpty(rangeStr)) {
+            rangeStr = "bytes=0-" + (totalFileSize-1);
+        }
+        range = rangeStr.split("bytes=|-");
+        long begin = 0;
+        if (range.length >= 2) {
+            begin = Long.parseLong(range[1]);
+        }
+        long end = totalFileSize - 1;
+        if (range.length >= 3) {
+            end = Long.parseLong(range[2]);
+        }
+        long len = (end - begin) + 1;
+        String contentRange = "bytes " + begin + "-" + end + "/" + totalFileSize;
+        httpServletResponse.setHeader("Content-Range", contentRange);
+        httpServletResponse.setHeader("Accept-Ranges", "bytes");
+        httpServletResponse.setHeader("Content-Type", "video/mp4");
+        httpServletResponse.setContentLength((int)len);
+        httpServletResponse.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+        HttpUtil.get(url, headers, httpServletResponse);
+    }
 }

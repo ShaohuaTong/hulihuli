@@ -3,12 +3,16 @@ package com.hulihuli.service;
 import com.hulihuli.dao.VideoDao;
 import com.hulihuli.domain.PageResult;
 import com.hulihuli.domain.Video;
+import com.hulihuli.domain.VideoLike;
 import com.hulihuli.domain.VideoTag;
 import com.hulihuli.exception.ConditionException;
+import com.hulihuli.service.util.FastDFSUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Service
@@ -16,6 +20,9 @@ public class VideoService {
 
     @Autowired
     private VideoDao videoDao;
+
+    @Autowired
+    private FastDFSUtil fastDFSUtil;
 
     @Transactional
     public void addVideos(Video video) {
@@ -45,4 +52,11 @@ public class VideoService {
         }
         return new PageResult<>(total, list);
     }
+
+    public void viewVideoOnlineBySlices(HttpServletRequest httpServletRequest,
+                                        HttpServletResponse httpServletResponse,
+                                        String path) throws Exception {
+        fastDFSUtil.viewVideoOnlineBySlices(httpServletRequest, httpServletResponse, path);
+    }
+
 }
