@@ -40,7 +40,7 @@ public class FastDFSUtil {
 
     private static final String UPLOADED_SIZE_KEY = "uploaded-size-key:";
 
-    private static final String UPLOADED_NUM_KEY = "uploaded-num-key:";
+    private static final String UPLOADED_NO_KEY = "uploaded-No-key:";
 
     private static final String DEFAULT_GROUP = "group1";
 
@@ -66,13 +66,13 @@ public class FastDFSUtil {
         appendFileStorageClient.modifyFile(DEFAULT_GROUP, filePath, file.getInputStream(), file.getSize(), offset);
     }
 
-    public String uploadFileBySlices(MultipartFile file, String fileMd5, Integer sliceNum, Integer totalSliceNum) throws Exception {
-        if (file == null || sliceNum == null || totalSliceNum == null) {
+    public String uploadFileBySlices(MultipartFile file, String fileMd5, Integer sliceNo, Integer totalSliceNo) throws Exception {
+        if (file == null || sliceNo == null || totalSliceNo == null) {
             throw new ConditionException("参数异常！");
         }
         String pathKey = PATH_KEY + fileMd5;
         String uploadedSizeKey = UPLOADED_SIZE_KEY + fileMd5;
-        String uploadedNumKey = UPLOADED_NUM_KEY + fileMd5;
+        String uploadedNoKey = UPLOADED_NO_KEY + fileMd5;
 
         String uploadedSizeStr =  redisTemplate.opsForValue().get(uploadedSizeKey);
         Long uploadedSize = 0L;
@@ -82,31 +82,31 @@ public class FastDFSUtil {
         String fileType = this.getFileType(file);
 
         // 上传的是第一个分片
-        if (sliceNum == 1) {
+        if (sliceNo == 1) {
             String path = this.uploadAppenderFile(file);
             if (StringUtil.isNullOrEmpty(path)) {
                 throw new ConditionException("上传失败！");
             }
             redisTemplate.opsForValue().set(pathKey, path);
-            redisTemplate.opsForValue().set(uploadedNumKey, "1");
+            redisTemplate.opsForValue().set(uploadedNoKey, "1");
         } else {
             String path = redisTemplate.opsForValue().get(pathKey);
             if (StringUtil.isNullOrEmpty(path)) {
                 throw new ConditionException("上传失败！");
             }
             this.modifyAppenderFile(file, path, uploadedSize);
-            redisTemplate.opsForValue().increment(uploadedNumKey);
+            redisTemplate.opsForValue().increment(uploadedNoKey);
         }
         // 修改历史上传分片文件大小
         uploadedSize += file.getSize();
         redisTemplate.opsForValue().set(uploadedSizeKey, String.valueOf(uploadedSize));
         // 如果所有分片全部上传完毕，则清空redis里相关的key和value
-        String uploadedNumStr = redisTemplate.opsForValue().get(uploadedNumKey);
-        Integer uploadedNum = Integer.valueOf(uploadedNumStr);
+        String uploadedNoStr = redisTemplate.opsForValue().get(uploadedNoKey);
+        Integer uploadedNo = Integer.valueOf(uploadedNoStr);
         String resultPath = "";
-        if (uploadedNum.equals(totalSliceNum)) {
+        if (uploadedNo.equals(totalSliceNo)) {
             resultPath = redisTemplate.opsForValue().get(pathKey);
-            List<String> keyList = Arrays.asList(pathKey, uploadedSizeKey, uploadedNumKey);
+            List<String> keyList = Arrays.asList(pathKey, uploadedSizeKey, uploadedNoKey);
             redisTemplate.delete(keyList);
         }
         return resultPath;
