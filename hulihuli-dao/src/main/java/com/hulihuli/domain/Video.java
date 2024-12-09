@@ -1,7 +1,5 @@
 package com.hulihuli.domain;
 
-import org.springframework.data.annotation.Id;
-
 import java.util.Date;
 import java.util.List;
 

@@ -5,6 +5,7 @@ import com.hulihuli.domain.VideoTag;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface VideoDao {
@@ -13,4 +14,7 @@ public interface VideoDao {
 
     Integer batchAddVideoTags(List<VideoTag> videoTagList);
 
+    Integer pageCountVideos(Map<String, Object> params);
+
+    List<Video> pageListVideos(Map<String, Object> params);
 }
