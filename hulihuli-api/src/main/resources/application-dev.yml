@@ -10,6 +10,11 @@ spring:
     host: 127.0.0.1
     port: 6379
     password:
+  #file
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 1GB
 #rocketmq
 rocketmq:
   name:
@@ -18,3 +23,4 @@ rocketmq:
 #fastdfs
 fdfs:
   tracker-list: 192.168.56.20:22122
+  tmpfilepath: "/Users/shaoh/tmpfile/"

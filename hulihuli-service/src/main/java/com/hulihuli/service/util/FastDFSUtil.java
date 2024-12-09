@@ -7,11 +7,15 @@ import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.hulihuli.exception.ConditionException;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +33,9 @@ public class FastDFSUtil {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Value("${fdfs.tmpfilepath}")
+    private String tmpfilePath;
+
     private static final String PATH_KEY = "path-key:";
 
     private static final String UPLOADED_SIZE_KEY = "uploaded-size-key:";
@@ -36,6 +43,9 @@ public class FastDFSUtil {
     private static final String UPLOADED_NUM_KEY = "uploaded-num-key:";
 
     private static final String DEFAULT_GROUP = "group1";
+
+    // 2MB 2兆
+    private static final int SLICE_SIZE = 1024 * 1024 * 2;
 
     // 上传
     public String uploadCommonFile(MultipartFile file) throws IOException {
@@ -100,6 +110,38 @@ public class FastDFSUtil {
             redisTemplate.delete(keyList);
         }
         return resultPath;
+    }
+
+    // 把文件切成分片，通常会是前端书写并且在前端调用
+    public void convertFileToSlices(MultipartFile multipartFile) throws IOException {
+        String fileType = this.getFileType(multipartFile);
+        // 生成临时文件，将MultipartFile转为File
+        File file = this.multipartFileToFile(multipartFile);
+
+        long fileLength = file.length();
+        int count = 1;
+        for (int i = 0; i < fileLength; i += SLICE_SIZE) {
+            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+            randomAccessFile.seek(i);
+            byte[] bytes = new byte[SLICE_SIZE];
+            int len = randomAccessFile.read(bytes);
+            String path = tmpfilePath + count + "." + fileType;
+            File slice = new File(path);
+            FileOutputStream fos = new FileOutputStream(slice);
+            fos.write(bytes, 0, len);
+            fos.close();
+            randomAccessFile.close();
+            count++;
+        }
+        file.delete();
+    }
+
+    public File multipartFileToFile(MultipartFile multipartFile) throws IOException {
+        String originalFilename = multipartFile.getOriginalFilename();
+        String[] filename = originalFilename.split("\\.");
+        File file = File.createTempFile(filename[0], filename[1]);
+        multipartFile.transferTo(file);
+        return file;
     }
 
     //删除
