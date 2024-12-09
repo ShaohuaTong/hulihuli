@@ -1,9 +1,6 @@
 package com.hulihuli.dao;
 
-import com.hulihuli.domain.Video;
-import com.hulihuli.domain.VideoCollection;
-import com.hulihuli.domain.VideoLike;
-import com.hulihuli.domain.VideoTag;
+import com.hulihuli.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,4 +38,13 @@ public interface VideoDao {
 
     VideoCollection getVideoCollectionByVideoIdAndUserId(@Param("videoId") Long videoId,
                                                          @Param("userId") Long userId);
+
+    VideoCoin getVideoCoinByVideoIdAndUserId(@Param("videoId") Long videoId,
+                                             @Param("userId") Long userId);
+
+    Integer addVideoCoin(VideoCoin videoCoin);
+
+    Integer updateVideoCoin(VideoCoin videoCoin);
+
+    Long getVideoCoinsAmount(Long videoId);
 }

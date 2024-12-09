@@ -70,6 +70,30 @@
                    #{createTime}
                )
     </insert>
+    <insert id="addVideoCoin" parameterType="com.hulihuli.domain.VideoCoin">
+        insert into
+            t_video_coin(
+            userId,
+            videoId,
+            amount,
+            createTime
+        )values(
+                   #{userId},
+                   #{videoId},
+                   #{amount},
+                   #{createTime}
+               )
+    </insert>
+    <update id="updateVideoCoin" parameterType="com.hulihuli.domain.VideoCoin">
+        update
+            t_video_coin
+        set
+            amount = #{amount},
+            updateTime = #{updateTime}
+        where
+            videoId = #{videoId}
+          and userId = #{userId}
+    </update>
     <delete id="deleteVideoLike">
         delete from
             t_video_like
@@ -150,6 +174,24 @@
         where
             videoId = #{videoId}
           and userId = #{userId}
+    </select>
+
+    <select id="getVideoCoinByVideoIdAndUserId" resultType="com.hulihuli.domain.VideoCoin">
+        select
+            *
+        from
+            t_video_coin
+        where
+            videoId = #{videoId}
+          and userId = #{userId}
+    </select>
+    <select id="getVideoCoinsAmount" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select
+            sum(amount)
+        from
+            t_video_coin
+        where
+            videoId = #{videoId}
     </select>
 </mapper>
 

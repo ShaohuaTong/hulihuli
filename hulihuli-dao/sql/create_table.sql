@@ -244,4 +244,29 @@ CREATE TABLE IF NOT EXISTS `t_collection_group`  (
                                        PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '收藏分组表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for t_user_coin
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_user_coin`  (
+                                `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                `userId` bigint(0) NULL DEFAULT NULL COMMENT '用户id',
+                                `amount` bigint(0) NULL DEFAULT NULL COMMENT '硬币总数',
+                                `createTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+                                `updateTime` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+                                PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户硬币表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for t_video_coin
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_video_coin`  (
+                                 `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '视频投稿id',
+                                 `userId` bigint(0) NULL DEFAULT NULL COMMENT '用户id',
+                                 `videoId` bigint(0) NULL DEFAULT NULL COMMENT '视频投稿id',
+                                 `amount` int(0) NULL DEFAULT NULL COMMENT '投币数',
+                                 `createTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+                                 `updateTime` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+                                 PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频硬币表' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;

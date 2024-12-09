@@ -1,10 +1,7 @@
 package com.hulihuli.api;
 
 import com.hulihuli.api.support.UserSupport;
-import com.hulihuli.domain.JsonResponse;
-import com.hulihuli.domain.PageResult;
-import com.hulihuli.domain.Video;
-import com.hulihuli.domain.VideoCollection;
+import com.hulihuli.domain.*;
 import com.hulihuli.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -108,6 +105,29 @@ public class VideoApi {
             userId = userSupport.getCurrentUserId();
         }catch (Exception ignored){}
         Map<String, Object> result = videoService.getVideoCollections(videoId, userId);
+        return new JsonResponse<>(result);
+    }
+
+    /**
+     * 视频投币
+     */
+    @PostMapping("/video-coins")
+    public JsonResponse<String> addVideoCoins(@RequestBody VideoCoin videoCoin){
+        Long userId = userSupport.getCurrentUserId();
+        videoService.addVideoCoins(videoCoin, userId);
+        return JsonResponse.success();
+    }
+
+    /**
+     * 查询视频投币数量
+     */
+    @GetMapping("/video-coins")
+    public JsonResponse<Map<String, Object>> getVideoCoins(@RequestParam Long videoId){
+        Long userId = null;
+        try{
+            userId = userSupport.getCurrentUserId();
+        }catch (Exception ignored){}
+        Map<String, Object> result = videoService.getVideoCoins(videoId, userId);
         return new JsonResponse<>(result);
     }
 
