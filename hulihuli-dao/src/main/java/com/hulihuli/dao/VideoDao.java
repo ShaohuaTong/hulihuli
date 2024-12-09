@@ -1,6 +1,7 @@
 package com.hulihuli.dao;
 
 import com.hulihuli.domain.Video;
+import com.hulihuli.domain.VideoCollection;
 import com.hulihuli.domain.VideoLike;
 import com.hulihuli.domain.VideoTag;
 import org.apache.ibatis.annotations.Mapper;
@@ -30,4 +31,14 @@ public interface VideoDao {
                             @Param("userId") Long userId);
 
     Long getVideoLikes(Long videoId);
+
+    Integer deleteVideoCollection(@Param("videoId") Long videoId,
+                                  @Param("userId") Long userId);
+
+    Integer addVideoCollection(VideoCollection videoCollection);
+
+    Long getVideoCollections(Long videoId);
+
+    VideoCollection getVideoCollectionByVideoIdAndUserId(@Param("videoId") Long videoId,
+                                                         @Param("userId") Long userId);
 }

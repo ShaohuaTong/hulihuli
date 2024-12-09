@@ -4,6 +4,7 @@ import com.hulihuli.api.support.UserSupport;
 import com.hulihuli.domain.JsonResponse;
 import com.hulihuli.domain.PageResult;
 import com.hulihuli.domain.Video;
+import com.hulihuli.domain.VideoCollection;
 import com.hulihuli.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +75,39 @@ public class VideoApi {
             userId = userSupport.getCurrentUserId();
         } catch (Exception ignored){}
         Map<String, Object> result = videoService.getVideoLikes(videoId, userId);
+        return new JsonResponse<>(result);
+    }
+
+    /**
+     * 收藏视频
+     */
+    @PostMapping("/video-collections")
+    public JsonResponse<String> addVideoCollection(@RequestBody VideoCollection videoCollection){
+        Long userId = userSupport.getCurrentUserId();
+        videoService.addVideoCollection(videoCollection, userId);
+        return JsonResponse.success();
+    }
+
+    /**
+     * 取消收藏视频
+     */
+    @DeleteMapping("/video-collections")
+    public JsonResponse<String> deleteVideoCollection(@RequestParam Long videoId){
+        Long userId = userSupport.getCurrentUserId();
+        videoService.deleteVideoCollection(videoId, userId);
+        return JsonResponse.success();
+    }
+
+    /**
+     * 查询视频收藏数量
+     */
+    @GetMapping("/video-collections")
+    public JsonResponse<Map<String, Object>> getVideoCollections(@RequestParam Long videoId){
+        Long userId = null;
+        try{
+            userId = userSupport.getCurrentUserId();
+        }catch (Exception ignored){}
+        Map<String, Object> result = videoService.getVideoCollections(videoId, userId);
         return new JsonResponse<>(result);
     }
 

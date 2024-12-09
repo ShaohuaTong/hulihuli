@@ -56,9 +56,30 @@
                    #{createTime}
                )
     </insert>
+    <insert id="addVideoCollection" parameterType="com.hulihuli.domain.VideoCollection">
+        insert into
+            t_video_collection(
+            userId,
+            videoId,
+            groupId,
+            createTime
+        )values(
+                   #{userId},
+                   #{videoId},
+                   #{groupId},
+                   #{createTime}
+               )
+    </insert>
     <delete id="deleteVideoLike">
         delete from
             t_video_like
+        where
+            videoId = #{videoId}
+          and userId = #{userId}
+    </delete>
+    <delete id="deleteVideoCollection">
+        delete from
+            t_video_collection
         where
             videoId = #{videoId}
           and userId = #{userId}
@@ -112,6 +133,23 @@
             t_video_like
         where
             videoId = #{videoId}
+    </select>
+    <select id="getVideoCollections" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select
+            count(1)
+        from
+            t_video_collection
+        where
+            videoId = #{videoId}
+    </select>
+    <select id="getVideoCollectionByVideoIdAndUserId" resultType="com.hulihuli.domain.VideoCollection">
+        select
+            *
+        from
+            t_video_collection
+        where
+            videoId = #{videoId}
+          and userId = #{userId}
     </select>
 </mapper>
 
