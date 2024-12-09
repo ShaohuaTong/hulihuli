@@ -269,4 +269,19 @@ CREATE TABLE IF NOT EXISTS `t_video_coin`  (
                                  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频硬币表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for t_video_comment
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_video_comment`  (
+                                    `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                    `videoId` bigint(0) NOT NULL COMMENT '视频id',
+                                    `userId` bigint(0) NOT NULL COMMENT '用户id',
+                                    `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论',
+                                    `replyUserId` bigint(0) NULL DEFAULT NULL COMMENT '回复用户id',
+                                    `rootId` bigint(0) NULL DEFAULT NULL COMMENT '根节点评论id',
+                                    `createTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+                                    `updateTime` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+                                    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 112 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频评论表' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;

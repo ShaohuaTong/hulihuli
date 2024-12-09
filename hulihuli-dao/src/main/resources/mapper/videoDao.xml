@@ -84,6 +84,25 @@
                    #{createTime}
                )
     </insert>
+
+    <insert id="addVideoComment" parameterType="com.hulihuli.domain.VideoComment">
+        insert into
+            t_video_comment(
+            videoId,
+            userId,
+            comment,
+            replyUserId,
+            rootId,
+            createTime
+        ) values (
+                   #{videoId},
+                   #{userId},
+                   #{comment},
+                   #{replyUserId},
+                   #{rootId},
+                   #{createTime}
+        )
+    </insert>
     <update id="updateVideoCoin" parameterType="com.hulihuli.domain.VideoCoin">
         update
             t_video_coin
@@ -192,6 +211,38 @@
             t_video_coin
         where
             videoId = #{videoId}
+    </select>
+    <select id="pageCountVideoComments" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+            count(1)
+        from
+            t_video_comment
+        where
+            videoId = #{videoId}
+          and rootId is null
+    </select>
+    <select id="pageListVideoComments" parameterType="java.util.Map" resultType="com.hulihuli.domain.VideoComment">
+        select
+            *
+        from
+            t_video_comment
+        where
+            videoId = #{videoId}
+          and rootId is null
+        order by id desc
+            limit #{offset}, #{limit}
+    </select>
+    <select id="batchGetVideoCommentsByRootIds" parameterType="java.util.List" resultType="com.hulihuli.domain.VideoComment">
+        select
+            *
+        from
+            t_video_comment
+        where
+            rootId in
+            <foreach collection="rootIdList" item="rootId" open="(" close=")" separator=",">
+                #{rootId}
+            </foreach>
+        order by id
     </select>
 </mapper>
 
