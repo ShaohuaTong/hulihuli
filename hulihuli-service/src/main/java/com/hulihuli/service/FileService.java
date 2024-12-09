@@ -20,7 +20,7 @@ public class FileService {
     @Autowired
     private FastDFSUtil fastDFSUtil;
 
-    public String uploadFileBySlices(MultipartFile slice,
+    public String  uploadFileBySlices(MultipartFile slice,
                                      String fileMD5,
                                      Integer sliceNo,
                                      Integer totalSliceNo) throws Exception {
@@ -29,6 +29,7 @@ public class FileService {
             return dbFileMD5.getUrl();
         }
         String url = fastDFSUtil.uploadFileBySlices(slice, fileMD5, sliceNo, totalSliceNo);
+        // 只有当所有分片上传完毕，才会返回一个非空的url
         if(!StringUtil.isNullOrEmpty(url)){
             dbFileMD5 = new File();
             dbFileMD5.setCreateTime(new Date());
