@@ -169,4 +169,43 @@ CREATE TABLE IF NOT EXISTS `t_file`  (
                            PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for t_video
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_video`  (
+                            `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                            `userId` bigint NOT NULL COMMENT '用户id',
+                            `url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '视频链接',
+                            `thumbnail` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '封面链接',
+                            `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '视频标题',
+                            `type` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '视频类型：0原创 1转载',
+                            `duration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '视频时长',
+                            `area` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '所在分区：0鬼畜 1音乐 2电影',
+                            `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '视频简介',
+                            `createTime` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                            `updateTime` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                            PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频投稿记录表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for t_tag
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_tag`  (
+                          `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                          `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标签名称',
+                          `createTime` datetime NULL DEFAULT NULL,
+                          PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '标签表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for t_video_tag
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_video_tag`  (
+                                `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                `videoId` bigint NOT NULL COMMENT '视频id',
+                                `tagId` bigint NOT NULL COMMENT '标签id',
+                                `createTime` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+                                PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频标签关联表' ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
