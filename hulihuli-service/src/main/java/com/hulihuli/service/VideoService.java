@@ -59,4 +59,35 @@ public class VideoService {
         fastDFSUtil.viewVideoOnlineBySlices(httpServletRequest, httpServletResponse, path);
     }
 
+    public void addVideoLike(Long videoId, Long userId) {
+        Video video = videoDao.getVideoById(videoId);
+        if(video == null){
+            throw new ConditionException("非法视频！");
+        }
+        VideoLike videoLike = videoDao.getVideoLikeByVideoIdAndUserId(videoId, userId);
+        if(videoLike != null){
+            throw new ConditionException("已经赞过！");
+        }
+        videoLike = new VideoLike();
+        videoLike.setVideoId(videoId);
+        videoLike.setUserId(userId);
+        videoLike.setCreateTime(new Date());
+        videoDao.addVideoLike(videoLike);
+    }
+
+    public void deleteVideoLike(Long videoId, Long userId) {
+        videoDao.deleteVideoLike(videoId, userId);
+    }
+
+    // 查询所有点赞数量后 并且查询当前用户是否点过赞， userId没登陆时是null
+    public Map<String, Object> getVideoLikes(Long videoId, Long userId) {
+        Long count = videoDao.getVideoLikes(videoId);
+        VideoLike videoLike = videoDao.getVideoLikeByVideoIdAndUserId(videoId, userId);
+        boolean like = videoLike != null;
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", count);
+        result.put("like", like);
+        return result;
+    }
+
 }

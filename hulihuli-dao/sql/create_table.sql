@@ -208,4 +208,15 @@ CREATE TABLE IF NOT EXISTS `t_video_tag`  (
                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频标签关联表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for t_video_like
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_video_like`  (
+                                 `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                 `userId` bigint NOT NULL COMMENT '用户id',
+                                 `videoId` bigint NOT NULL COMMENT '视频投稿id',
+                                 `createTime` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                 PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频点赞记录表' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;
