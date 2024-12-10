@@ -1,5 +1,6 @@
 package com.hulihuli;
 
+import com.hulihuli.service.websocket.WebSocketService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -9,6 +10,7 @@ public class HulihuliApplication {
 
     public static void main(String[] args) {
         ApplicationContext app = SpringApplication.run(HulihuliApplication.class, args);
+        WebSocketService.setApplicationContext(app);
     }
 
 }
