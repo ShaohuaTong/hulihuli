@@ -284,4 +284,17 @@ CREATE TABLE IF NOT EXISTS `t_video_comment`  (
                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 112 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频评论表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for t_danmu
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_danmu`  (
+                            `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                            `userId` bigint NULL DEFAULT NULL COMMENT '用户id',
+                            `videoId` bigint NULL DEFAULT NULL COMMENT '视频Id',
+                            `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '弹幕内容',
+                            `danmuTime` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '弹幕出现时间',
+                            `createTime` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                            PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '弹幕记录表' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;
