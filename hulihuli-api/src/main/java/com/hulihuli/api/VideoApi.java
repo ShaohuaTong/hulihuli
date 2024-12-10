@@ -38,8 +38,8 @@ public class VideoApi {
     @GetMapping("/video-slices")
     public void viewVideoOnlineBySlices(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
-                                        String path) throws Exception {
-        videoService.viewVideoOnlineBySlices(httpServletRequest, httpServletResponse, path);
+                                        String url) throws Exception {
+        videoService.viewVideoOnlineBySlices(httpServletRequest, httpServletResponse, url);
     }
 
     /**
